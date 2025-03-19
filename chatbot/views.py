@@ -1,6 +1,8 @@
-import nltk
-from nltk.tokenize import word_tokenize
+from django.http import JsonResponse
+import nltk # type: ignore
+from nltk.tokenize import word_tokenize # type: ignore
 from difflib import get_close_matches
+
 
 nltk.download('punkt')
 
@@ -16,8 +18,8 @@ def get_response(request):
         best_match = get_close_matches(user_message, all_questions, n=1, cutoff=0.6)
         
         if best_match:
-            pregunta = Pregunta.objects.get(texto__iexact=best_match[0])
-            respuesta = Respuesta.objects.filter(pregunta=pregunta).first()
+            pregunta = pregunta.objects.get(texto__iexact=best_match[0])
+            respuesta = respuesta.objects.filter(pregunta=pregunta).first()
             bot_response = respuesta.texto if respuesta else "No encontré una respuesta exacta."
         else:
             bot_response = "No sé la respuesta, pero puedes enseñarme nuevas preguntas."
